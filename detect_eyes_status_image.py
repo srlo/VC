@@ -33,8 +33,6 @@ model = load_model(args["model"])
 video = cv2.VideoCapture(args["video"])
 
 while True:
-    # grab the current frame and initialize the occupied/unoccupied
-    # text
     frame = video.read()
     frame = frame[1]  # if args.get("video", None) is None else frame[1]
     frame = cv2.resize(frame, (640, 480))
@@ -42,7 +40,6 @@ while True:
 
     (h, w) = frame.shape[:2]
 
-    # construct a blob from the image
     blob = cv2.dnn.blobFromImage(frame, 1.0, (300, 300),
                                  (104.0, 177.0, 123.0))
 
@@ -50,14 +47,11 @@ while True:
     net.setInput(blob)
     detections = net.forward()
 
-
-
     # loop over the detections
     for i in range(0, detections.shape[2]):
         # extract the confidence (i.e., probability) associated with
         # the detection
         confidence = detections[0, 0, i, 2]
-
 
         # filter out weak detections by ensuring the confidence is
         # greater than the minimum confidence
@@ -65,7 +59,6 @@ while True:
             # compute the (x, y)-coordinates of the bounding box for
             # the object
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-
 
             (startX, startY, endX, endY) = box.astype("int")
             # ensure the bounding boxes fall within the dimensions of
@@ -101,7 +94,6 @@ while True:
 
     # show the frame and record if the user presses a key
     cv2.imshow("Vídeo", frame)
-
     # out.write(frame)
 
     key = cv2.waitKey(1) & 0xFF
